@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useStore } from "@/app/providers";
 
 export default function CheckoutAccountPage() {
   const router = useRouter();
   const { cart, isSignedIn, account, signIn } = useStore();
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
   useEffect(() => {
     if (isSignedIn) router.replace("/checkout");
@@ -18,6 +19,15 @@ export default function CheckoutAccountPage() {
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email") || "");
     signIn({ name: email.split("@")[0], email });
+  };
+
+  const submitSignup = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    signIn({
+      name: String(data.get("name") || ""),
+      email: String(data.get("email") || "")
+    });
   };
 
   if (cart.length === 0) {
@@ -37,13 +47,26 @@ export default function CheckoutAccountPage() {
       <div className="checkout-account-layout">
         <section className="checkout-account-option">
           <p className="eyebrow">Returning collector</p>
-          <h2>Sign in</h2>
-          <p>Continue with your saved details and view this purchase in your order history.</p>
+          <div className="checkout-mode-tabs">
+            <button type="button" className={mode === "login" ? "active" : ""} onClick={() => setMode("login")}>Sign in</button>
+            <button type="button" className={mode === "signup" ? "active" : ""} onClick={() => setMode("signup")}>Create account</button>
+          </div>
+          <h2>{mode === "login" ? "Sign in" : "Create account"}</h2>
+          <p>{mode === "login" ? "Continue with your saved details and view this purchase in your order history." : "Create an account now, finish checkout, and keep this purchase in your order history."}</p>
+          {mode === "login" ? (
           <form className="checkout-login-form" onSubmit={submitLogin}>
             <label>Email address<input required name="email" type="email" autoComplete="email"/></label>
             <label>Password<input required name="password" type="password" autoComplete="current-password"/></label>
             <button type="submit" className="button primary">Sign in and continue</button>
           </form>
+          ) : (
+          <form className="checkout-login-form" onSubmit={submitSignup}>
+            <label>Full name<input required name="name" autoComplete="name"/></label>
+            <label>Email address<input required name="email" type="email" autoComplete="email"/></label>
+            <label>Password<input required name="password" type="password" autoComplete="new-password"/></label>
+            <button type="submit" className="button primary">Create account and continue</button>
+          </form>
+          )}
         </section>
         <section className="checkout-account-option guest-option">
           <p className="eyebrow">No account needed</p>
