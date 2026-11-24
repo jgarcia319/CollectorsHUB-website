@@ -21,6 +21,8 @@ type StoreContextValue = {
   cartCount: number;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
   addedItem: Product | null;
   setAddedItem: (product: Product | null) => void;
   account: { name: string; email: string } | null;
@@ -42,6 +44,7 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 export default function Providers({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [addedItem, setAddedItem] = useState<Product | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -82,6 +85,8 @@ export default function Providers({ children }: { children: ReactNode }) {
     cartCount: cart.reduce((total, item) => total + item.quantity, 0),
     cartOpen,
     setCartOpen,
+    mobileMenuOpen,
+    setMobileMenuOpen,
     addedItem,
     setAddedItem,
     account,
@@ -103,7 +108,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     toggleSaved: (id) => setSavedIds((current) => current.includes(id) ? current.filter((savedId) => savedId !== id) : [...current, id]),
     orders,
     addOrder: (order) => setOrders((current) => [order, ...current])
-  }), [cart, cartOpen, addedItem, savedIds, orders]);
+  }), [cart, cartOpen, mobileMenuOpen, addedItem, savedIds, orders]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

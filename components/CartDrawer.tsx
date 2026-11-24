@@ -5,21 +5,30 @@ import { useEffect } from "react";
 import { useStore } from "@/app/providers";
 
 export default function CartDrawer() {
-  const { cart, cartOpen, setCartOpen, removeFromCart, updateQuantity } = useStore();
+  const { cart, cartOpen, setCartOpen, mobileMenuOpen, setMobileMenuOpen, removeFromCart, updateQuantity } = useStore();
   const subtotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
 
   useEffect(() => {
     document.body.classList.toggle("drawer-open", cartOpen);
   }, [cartOpen]);
 
+  useEffect(() => {
+    if (!cartOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setCartOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [cartOpen, setCartOpen]);
+
   return (
     <>
       <button className={cartOpen ? "drawer-backdrop visible" : "drawer-backdrop"} type="button" aria-label="Close cart" onClick={() => setCartOpen(false)} />
       <aside className={cartOpen ? "cart-drawer open" : "cart-drawer"} aria-label="Shopping cart" aria-hidden={!cartOpen}>
-        <div className="drawer-header"><div><p className="eyebrow">Your pull list</p><h2>Shopping cart</h2></div><button type="button" onClick={() => setCartOpen(false)} aria-label="Close cart">×</button></div>
+        <div className="drawer-header"><div><p className="eyebrow">Your pull list</p><h2>Shopping cart</h2></div><button type="button" onClick={() => setCartOpen(false)} aria-label={mobileMenuOpen ? "Back to navigation menu" : "Close cart"}>{mobileMenuOpen ? "←" : "×"}</button></div>
         <div className="cart-items">
           {cart.length === 0 ? (
-            <div className="cart-empty"><span>HUB</span><h3>Your cart is empty</h3><p>Browse the latest drops and add a card to your pull list.</p><button type="button" onClick={() => setCartOpen(false)}>Continue shopping</button></div>
+            <div className="cart-empty"><span>HUB</span><h3>Your cart is empty</h3><p>Browse the latest drops and add a card to your pull list.</p><button type="button" onClick={() => { setCartOpen(false); if (mobileMenuOpen) setMobileMenuOpen(true); }}>Continue shopping</button></div>
           ) : cart.map((item) => (
             <article className="cart-item" key={item.product.id}>
               <img src={item.product.image} alt="" />
@@ -28,7 +37,7 @@ export default function CartDrawer() {
             </article>
           ))}
         </div>
-        {cart.length > 0 && <div className="cart-footer"><div><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div><p>Shipping and taxes calculated at checkout.</p><Link href="/checkout/account" className="checkout-button" onClick={() => setCartOpen(false)}>Checkout</Link></div>}
+        {cart.length > 0 && <div className="cart-footer"><div><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div><p>Shipping and taxes calculated at checkout.</p><Link href="/checkout/account" className="checkout-button" onClick={() => { setCartOpen(false); setMobileMenuOpen(false); }}>Checkout</Link></div>}
       </aside>
     </>
   );
