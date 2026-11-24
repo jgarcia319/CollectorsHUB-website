@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useStore } from "@/app/providers";
 
 const navigationLinks = [
@@ -28,6 +28,7 @@ function AccountIcon() {
 
 export default function Navbar() {
   const { cartCount, setCartOpen, savedIds, mobileMenuOpen, setMobileMenuOpen } = useStore();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     document.body.classList.toggle("navigation-open", mobileMenuOpen);
@@ -35,6 +36,7 @@ export default function Navbar() {
       if (event.key === "Escape" && !mobileMenuOpen) return;
       if (event.key === "Escape" && !document.body.classList.contains("drawer-open")) {
         setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
       }
     };
     window.addEventListener("keydown", closeOnEscape);
@@ -47,13 +49,19 @@ export default function Navbar() {
   useEffect(() => {
     const media = window.matchMedia("(min-width: 821px)");
     const closeMenuOnDesktop = (event: MediaQueryListEvent) => {
-      if (event.matches) setMobileMenuOpen(false);
+      if (event.matches) {
+        setMobileMenuOpen(false);
+        document.querySelector<HTMLElement>(".topbar .nav a")?.focus();
+      }
     };
     media.addEventListener("change", closeMenuOnDesktop);
     return () => media.removeEventListener("change", closeMenuOnDesktop);
   }, [setMobileMenuOpen]);
 
-  const closeMenu = () => setMobileMenuOpen(false);
+  const closeMenu = () => {
+    setMobileMenuOpen(false);
+    window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+  };
   const openCart = () => setCartOpen(true);
 
   return (
@@ -70,7 +78,7 @@ export default function Navbar() {
           <Link href="/saved" className="icon-button" aria-label={`Saved items: ${savedIds.length}`} title="Wishlist">
             <WishlistIcon/><span>{savedIds.length}</span>
           </Link>
-          <button type="button" className="icon-button cart-button" onClick={openCart} aria-label={`Open cart with ${cartCount} items`} title="Cart">
+          <button id="desktop-cart-trigger" type="button" className="icon-button cart-button" onClick={openCart} aria-label={`Open cart with ${cartCount} items`} title="Cart">
             <CartIcon/><span>{cartCount}</span>
           </button>
           <Link href="/account" className="icon-button account-button" aria-label="Account" title="Account">
@@ -78,6 +86,7 @@ export default function Navbar() {
           </Link>
         </div>
         <button
+          ref={menuButtonRef}
           className="menu-button"
           type="button"
           aria-expanded={mobileMenuOpen}
@@ -100,6 +109,7 @@ export default function Navbar() {
         className={mobileMenuOpen ? "mobile-nav-drawer open" : "mobile-nav-drawer"}
         aria-label="Mobile navigation"
         aria-hidden={!mobileMenuOpen}
+        inert={!mobileMenuOpen}
       >
         <div className="mobile-nav-header">
           <p className="eyebrow">CollectorsHUB</p>
@@ -112,7 +122,7 @@ export default function Navbar() {
           <Link href="/saved" onClick={closeMenu} aria-label={`Wishlist, ${savedIds.length} saved items`}>
             <span className="mobile-action-icon"><WishlistIcon/>{savedIds.length > 0 && <b>{savedIds.length}</b>}</span><span>Wishlist</span>
           </Link>
-          <button type="button" onClick={openCart} aria-label={`Cart, ${cartCount} items`}>
+          <button id="mobile-cart-trigger" type="button" onClick={openCart} aria-label={`Cart, ${cartCount} items`}>
             <span className="mobile-action-icon"><CartIcon/>{cartCount > 0 && <b>{cartCount}</b>}</span><span>Cart</span>
           </button>
           <Link href="/account" onClick={closeMenu} aria-label="Account">
