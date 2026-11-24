@@ -1,0 +1,5 @@
+export default function ContactPage() {
+  return (
+    <div className="inner-page"><header className="page-header"><p className="eyebrow">Get in touch</p><h1>Talk cards.<br/><em>Ask us anything.</em></h1></header><div className="form-layout"><section><p className="eyebrow">CollectorsHUB support</p><h2>We are here for every pull.</h2><p>Questions about inventory, condition, shipping, offers, or upcoming shows can be sent through the form.</p></section><form className="inquiry-form"><label>Name<input required name="name" placeholder="Your name"/></label><label>Email<input required type="email" name="email" placeholder="you@example.com"/></label><label>Subject<select name="subject"><option>Inventory question</option><option>Shipping</option><option>Card show</option><option>Other</option></select></label><label>Message<textarea required rows={6} name="message" placeholder="How can we help?"/></label><button type="submit" className="button primary">Send message</button></form></div></div>
+  );
+}
