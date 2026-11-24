@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect } from "react";
 import { useStore } from "@/app/providers";
+import ProductVisual from "@/components/ProductVisual";
 
 export default function CartDrawer() {
   const { cart, cartOpen, setCartOpen, mobileMenuOpen, setMobileMenuOpen, removeFromCart, updateQuantity } = useStore();
@@ -44,7 +45,7 @@ export default function CartDrawer() {
             <div className="cart-empty"><span>HUB</span><h3>Your cart is empty</h3><p>Browse the latest drops and add a card to your pull list.</p><button type="button" onClick={closeCart}>Continue shopping</button></div>
           ) : cart.map((item) => (
             <article className="cart-item" key={item.product.id}>
-              <img src={item.product.image} alt="" />
+              <ProductVisual product={item.product} size="mini" />
               <div><p>{item.product.category}</p><h3>{item.product.name}</h3><strong>${item.product.price.toFixed(2)}</strong><div className="quantity"><button type="button" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>−</button><span>{item.quantity}</span><button type="button" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>+</button></div></div>
               <button type="button" className="remove" onClick={() => removeFromCart(item.product.id)}>Remove</button>
             </article>

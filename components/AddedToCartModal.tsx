@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useStore } from "@/app/providers";
+import ProductVisual from "@/components/ProductVisual";
 
 export default function AddedToCartModal() {
   const { addedItem, setAddedItem, setCartOpen } = useStore();
@@ -33,7 +34,7 @@ export default function AddedToCartModal() {
         <p className="eyebrow">Added successfully</p>
         <h2 id="added-modal-title">Ready for the pull list.</h2>
         <div className="added-modal-item">
-          <img src={addedItem.image} alt="" />
+          <ProductVisual product={addedItem} size="mini" />
           <div><p>{addedItem.category}</p><h3>{addedItem.name}</h3><strong>${addedItem.price.toFixed(2)}</strong></div>
         </div>
         <div className="modal-actions">

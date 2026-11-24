@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Product } from "@/lib/products";
+import { getProduct, type Product } from "@/lib/products";
 
 type CartItem = { product: Product; quantity: number };
 export type Order = {
@@ -54,10 +54,25 @@ export default function Providers({ children }: { children: ReactNode }) {
     try {
       const savedCart = localStorage.getItem("collectorshub-cart");
       const saved = localStorage.getItem("collectorshub-saved");
-      if (savedCart) setCart(JSON.parse(savedCart));
+      if (savedCart) {
+        const storedCart: CartItem[] = JSON.parse(savedCart);
+        setCart(storedCart.map((item) => ({
+          ...item,
+          product: getProduct(item.product.id) ?? item.product
+        })));
+      }
       if (saved) setSavedIds(JSON.parse(saved));
       const savedOrders = localStorage.getItem("collectorshub-orders");
-      if (savedOrders) setOrders(JSON.parse(savedOrders));
+      if (savedOrders) {
+        const storedOrders: Order[] = JSON.parse(savedOrders);
+        setOrders(storedOrders.map((order) => ({
+          ...order,
+          items: order.items.map((item) => ({
+            ...item,
+            product: getProduct(item.product.id) ?? item.product
+          }))
+        })));
+      }
       const savedAccount = localStorage.getItem("collectorshub-account");
       if (savedAccount) setAccount(JSON.parse(savedAccount));
     } catch {}

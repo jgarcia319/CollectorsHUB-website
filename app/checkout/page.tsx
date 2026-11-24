@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { useStore, type Order } from "@/app/providers";
+import ProductVisual from "@/components/ProductVisual";
 
 export default function CheckoutPage() {
   const { cart, clearCart, addOrder, account } = useStore();
@@ -47,7 +48,7 @@ export default function CheckoutPage() {
           <section><p className="step-number">02</p><div><h2>Shipping address</h2><div className="field-grid"><label>Full name<input required name="name" autoComplete="name" defaultValue={account?.name || ""}/></label><label>Address<input required name="address" autoComplete="street-address"/></label><label>City<input required name="city" autoComplete="address-level2"/></label><label>State<input required name="state" autoComplete="address-level1"/></label><label>ZIP code<input required name="postalCode" autoComplete="postal-code"/></label></div></div></section>
           <section><p className="step-number">03</p><div><h2>Demo payment</h2><p className="demo-note">Prototype only. Do not enter real card details.</p><div className="field-grid"><label>Card number<input required inputMode="numeric" pattern="[0-9 ]{12,23}" placeholder="Demo: 4242 4242 4242 4242"/></label><label>Expiration<input required placeholder="MM / YY"/></label><label>Security code<input required inputMode="numeric" pattern="[0-9]{3,4}" placeholder="123"/></label></div></div></section>
         </div>
-        <aside className="order-summary"><p className="eyebrow">Order summary</p><h2>{cart.reduce((count, item) => count + item.quantity, 0)} items</h2>{cart.map((item) => <div className="summary-item" key={item.product.id}><img src={item.product.image} alt="" /><div><strong>{item.product.name}</strong><span>Qty {item.quantity}</span></div><b>${(item.product.price * item.quantity).toFixed(2)}</b></div>)}<div className="summary-total"><p><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></p><p><span>Shipping</span><strong>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</strong></p><p><span>Total</span><strong>${(subtotal + shipping).toFixed(2)}</strong></p></div><button className="button primary" type="submit" disabled={submitting}>{submitting ? "Processing..." : "Place demo order"}</button></aside>
+        <aside className="order-summary"><p className="eyebrow">Order summary</p><h2>{cart.reduce((count, item) => count + item.quantity, 0)} items</h2>{cart.map((item) => <div className="summary-item" key={item.product.id}><ProductVisual product={item.product} size="mini" /><div><strong>{item.product.name}</strong><span>Qty {item.quantity}</span></div><b>${(item.product.price * item.quantity).toFixed(2)}</b></div>)}<div className="summary-total"><p><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></p><p><span>Shipping</span><strong>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</strong></p><p><span>Total</span><strong>${(subtotal + shipping).toFixed(2)}</strong></p></div><button className="button primary" type="submit" disabled={submitting}>{submitting ? "Processing..." : "Place demo order"}</button></aside>
       </form>
     </div>
   );

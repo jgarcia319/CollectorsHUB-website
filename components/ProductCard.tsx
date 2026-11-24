@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useStore } from "@/app/providers";
 import type { Product } from "@/lib/products";
+import ProductVisual from "@/components/ProductVisual";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart, savedIds, toggleSaved } = useStore();
@@ -11,7 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
     <article className="product-card">
       <Link href={`/product/${product.id}`} className="product-image">
         {product.badge && <span className="badge">{product.badge}</span>}
-        <img src={product.image} alt={product.name} />
+        <ProductVisual product={product} />
         <span className="card-glare" />
       </Link>
       <button type="button" className={saved ? "save-button saved" : "save-button"} aria-label={saved ? "Remove saved item" : "Save item"} onClick={() => toggleSaved(product.id)}>♡</button>
