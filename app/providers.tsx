@@ -23,6 +23,10 @@ type StoreContextValue = {
   setCartOpen: (open: boolean) => void;
   addedItem: Product | null;
   setAddedItem: (product: Product | null) => void;
+  account: { name: string; email: string } | null;
+  isSignedIn: boolean;
+  signIn: (account: { name: string; email: string }) => void;
+  signOut: () => void;
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -41,6 +45,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   const [addedItem, setAddedItem] = useState<Product | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
 
   useEffect(() => {
     try {
@@ -50,6 +55,8 @@ export default function Providers({ children }: { children: ReactNode }) {
       if (saved) setSavedIds(JSON.parse(saved));
       const savedOrders = localStorage.getItem("collectorshub-orders");
       if (savedOrders) setOrders(JSON.parse(savedOrders));
+      const savedAccount = localStorage.getItem("collectorshub-account");
+      if (savedAccount) setAccount(JSON.parse(savedAccount));
     } catch {}
   }, []);
 
@@ -65,6 +72,11 @@ export default function Providers({ children }: { children: ReactNode }) {
     localStorage.setItem("collectorshub-orders", JSON.stringify(orders));
   }, [orders]);
 
+  useEffect(() => {
+    if (account) localStorage.setItem("collectorshub-account", JSON.stringify(account));
+    else localStorage.removeItem("collectorshub-account");
+  }, [account]);
+
   const value = useMemo<StoreContextValue>(() => ({
     cart,
     cartCount: cart.reduce((total, item) => total + item.quantity, 0),
@@ -72,6 +84,10 @@ export default function Providers({ children }: { children: ReactNode }) {
     setCartOpen,
     addedItem,
     setAddedItem,
+    account,
+    isSignedIn: account !== null,
+    signIn: (signedInAccount) => setAccount(signedInAccount),
+    signOut: () => setAccount(null),
     addToCart: (product) => {
       setCart((current) => {
         const existing = current.find((item) => item.product.id === product.id);

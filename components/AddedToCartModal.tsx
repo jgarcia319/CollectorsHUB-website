@@ -38,7 +38,7 @@ export default function AddedToCartModal() {
         </div>
         <div className="modal-actions">
           <button ref={continueButton} type="button" className="button outline" onClick={() => setAddedItem(null)}>Continue shopping</button>
-          <Link href="/checkout" className="button primary" onClick={() => { setAddedItem(null); setCartOpen(false); }}>Proceed to checkout</Link>
+          <Link href="/checkout/account" className="button primary" onClick={() => { setAddedItem(null); setCartOpen(false); }}>Proceed to checkout</Link>
         </div>
       </section>
     </div>

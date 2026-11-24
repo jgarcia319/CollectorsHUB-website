@@ -28,7 +28,7 @@ export default function CartDrawer() {
             </article>
           ))}
         </div>
-        {cart.length > 0 && <div className="cart-footer"><div><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div><p>Shipping and taxes calculated at checkout.</p><Link href="/checkout" className="checkout-button" onClick={() => setCartOpen(false)}>Checkout</Link></div>}
+        {cart.length > 0 && <div className="cart-footer"><div><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div><p>Shipping and taxes calculated at checkout.</p><Link href="/checkout/account" className="checkout-button" onClick={() => setCartOpen(false)}>Checkout</Link></div>}
       </aside>
     </>
   );
