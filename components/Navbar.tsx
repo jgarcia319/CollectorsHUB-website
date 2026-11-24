@@ -24,11 +24,16 @@ export default function Navbar() {
         <Link href="/shows" onClick={() => setMenuOpen(false)}>Card Shows</Link>
         <Link href="/sell" onClick={() => setMenuOpen(false)}>Sell / Request</Link>
         <Link href="/about" onClick={() => setMenuOpen(false)}>About</Link>
+        <Link href="/account" onClick={() => setMenuOpen(false)}>Account</Link>
       </nav>
       <div className="nav-actions">
         <Link href="/saved" className="icon-button" aria-label={`Saved items: ${savedIds.length}`}>♡<span>{savedIds.length}</span></Link>
+        <Link href="/account" className="icon-button account-button" aria-label="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"/></svg>
+        </Link>
         <button type="button" className="icon-button cart-button" onClick={() => setCartOpen(true)} aria-label={`Open cart with ${cartCount} items`}>
-          Cart <span>{cartCount}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10h9.8l2-7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>
+          <b className="cart-label">Cart</b><span>{cartCount}</span>
         </button>
       </div>
     </header>

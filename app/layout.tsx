@@ -5,6 +5,7 @@ import Providers from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import AddedToCartModal from "@/components/AddedToCartModal";
 
 export const metadata: Metadata = {
   title: { default: "CollectorsHUB | Sports Cards & Collectibles", template: "%s | CollectorsHUB" },
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           <Navbar />
           <main>{children}</main>
           <CartDrawer />
+          <AddedToCartModal />
           <Footer />
         </Providers>
       </body>
